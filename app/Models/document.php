@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Document extends Model
 {
     use HasFactory;
-    protected $table = 'yosuit_document_manager';
+    protected $table = 'documents';
 
     protected $fillable = [
         'cid', 'title', 'tags', 'json', 'type', 'added_by'

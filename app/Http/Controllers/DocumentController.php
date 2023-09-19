@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\document;
+use App\Models\Document;
 use Illuminate\Http\Request;
-// use Validator;
 
 class DocumentController extends Controller
 {
@@ -32,12 +31,26 @@ class DocumentController extends Controller
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
-            'tags' => 'required|array',
+            'tags' => 'required|string',
             'json' => 'required|string',
             'type' => 'required|numeric'
         ]);
 
-        dd('okook');
+        $data = new Document();
+        $data->cid = $request->cid;
+        $data->title = $request->title;
+        $data->tags = $request->tags;
+        $data->json = $request->json;
+        $data->type = $request->type;
+        $data->added_by = auth()->id();
+
+        if ($data->save()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data has beed added into database',
+                'data' => $data
+            ]);
+        }
     }
 
     /**
@@ -61,7 +74,7 @@ class DocumentController extends Controller
      */
     public function update(Request $request, document $document)
     {
-        //
+        dd($request->all(), $document);
     }
 
     /**
