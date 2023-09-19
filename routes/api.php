@@ -17,4 +17,7 @@ use App\Http\Controllers\AuthController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:api')->get('/user', 'AuthController@user');
+Route::middleware(['auth:api'])->group(function () {
+    Route::get('/user', [AuthController::class, 'user']);
+    // Add other routes that require authentication here
+});
