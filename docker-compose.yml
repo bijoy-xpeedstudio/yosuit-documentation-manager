@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  app:
+    build:
+      args:
+        user: xpeedstudio
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: app-hr-documentation-manager
+    container_name: app-hr-documentation-manager
+    ports:
+      - "8888:9000"
+    restart: unless-stopped
+    working_dir: /var/www/html/
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - yousuite-network
+    # command: composer require laravel/octane && php artisan octane:install && php artisan octane:start --server=swoole
+    
+
+networks:
+  yousuite-network:
+    driver: bridge
