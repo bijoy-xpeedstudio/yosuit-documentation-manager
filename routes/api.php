@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FolderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,4 +23,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     // Add other routes that require authentication here
     Route::apiResource('document', DocumentController::class);
+    Route::apiResource('folder', FolderController::class);
+    
 });
