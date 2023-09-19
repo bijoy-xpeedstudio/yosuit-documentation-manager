@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Folder;
 use App\Http\Responses\ApiResponse;
+use App\Http\Requests\FolderRequest;
 class FolderController extends Controller
 {
     /**
@@ -35,9 +36,18 @@ class FolderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FolderRequest $request)
     {
-        //
+        $request_time = date('y-m-d h:i:s');
+        $requestData = $request->validated();
+        try {
+            $data=array();// for demo
+            return ApiResponse::success($data, 'Success', 200, $request_time);
+
+        } 
+        catch (\Exception $e) {
+            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+        }
     }
 
     /**
