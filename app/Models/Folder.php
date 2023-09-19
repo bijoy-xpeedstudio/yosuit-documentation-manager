@@ -13,4 +13,8 @@ class Folder extends Model
         return $this->hasMany(Folder::class, 'parent_id', 'id');
         
     }
+    public function tags()
+    {
+        return $this->morphToMany('App\Models\Tag', 'taggables');
+    }
 }
