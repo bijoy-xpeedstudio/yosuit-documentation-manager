@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DocumentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,4 +21,5 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     // Add other routes that require authentication here
+    Route::apiResource('document', DocumentController::class);
 });
