@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Responses\ApiResponse;
 class FolderRequest extends FormRequest
 {
     /**
@@ -11,7 +13,7 @@ class FolderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,14 +24,19 @@ class FolderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:folders,name',
         ];
     }
+    // Message method is optional
     public function messages(): array
     {
         return [
             'name.required' => 'The field name field is required.',
             'name.max' => 'The name field should not exceed :max characters.',    
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(ApiResponse::validationError($validator->errors(), 'Validation Failed', 422));
     }
 }
