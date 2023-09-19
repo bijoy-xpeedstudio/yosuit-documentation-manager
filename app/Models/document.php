@@ -14,8 +14,19 @@ class Document extends Model
         'cid', 'title', 'tags', 'json', 'type', 'added_by'
     ];
 
+    /**
+     * return user
+     */
     public function addedBy()
     {
         return $this->belongsTo(User::class, 'added_by', 'id');
+    }
+
+    /**
+     * return category
+     */
+    public function cid()
+    {
+        return $this->belongsTo(Folder::class, 'cid', 'id');
     }
 }
