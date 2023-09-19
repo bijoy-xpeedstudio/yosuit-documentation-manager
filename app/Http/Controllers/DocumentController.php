@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\document;
+use App\Models\Document;
 use Illuminate\Http\Request;
-// use Validator;
+use App\Http\Responses\ApiResponse;
 
 class DocumentController extends Controller
 {
@@ -13,7 +13,16 @@ class DocumentController extends Controller
      */
     public function index()
     {
-        //
+        $request_time = date('y-m-d h:i:s');
+        try {
+            $data = Document::with('addedBy')->paginate(16);
+            // dd($data);
+            if ($data) {
+                return ApiResponse::success($data, 'Success', 200, $request_time);
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+        }
     }
 
     /**
@@ -29,15 +38,30 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
+        $request_time = date('y-m-d h:i:s');
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
-            'tags' => 'required|array',
+            'tags' => 'required|string',
             'json' => 'required|string',
             'type' => 'required|numeric'
         ]);
 
-        dd('okook');
+        $data = new Document();
+        $data->cid = $request->cid;
+        $data->title = $request->title;
+        $data->tags = $request->tags;
+        $data->json = $request->json;
+        $data->type = $request->type;
+        $data->added_by = auth()->id();
+
+        try {
+            if ($data->save()) {
+                return ApiResponse::success($data, 'Success', 200, $request_time);
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+        }
     }
 
     /**
@@ -61,7 +85,28 @@ class DocumentController extends Controller
      */
     public function update(Request $request, document $document)
     {
-        //
+        $request_time = date('y-m-d h:i:s');
+        $request->validate([
+            'cid' => 'required|numeric',
+            'title' => 'required|string|max:255',
+            'tags' => 'required|string',
+            'json' => 'required|string',
+            'type' => 'required|numeric'
+        ]);
+
+        $document->cid = $request->cid;
+        $document->title = $request->title;
+        $document->tags = $request->tags;
+        $document->json = $request->json;
+        $document->type = $request->type;
+        $document->added_by = auth()->id();
+        try {
+            if ($document->save()) {
+                return ApiResponse::success($document, 'data updated successfull', 200, $request_time);
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+        }
     }
 
     /**
@@ -69,6 +114,13 @@ class DocumentController extends Controller
      */
     public function destroy(document $document)
     {
-        //
+        $request_time = date('Y-m-d H:i:s');
+        try {
+            if ($document->delete()) {
+                return ApiResponse::success($document, 'data deleted successfull', 200, $request_time);
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+        }
     }
 }
