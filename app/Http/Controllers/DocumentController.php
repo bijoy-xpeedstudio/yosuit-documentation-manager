@@ -17,10 +17,22 @@ class DocumentController extends Controller
         try {
             $data = Document::with('cid.subFolder', 'addedBy')->paginate(16);
             if ($data) {
-                return ApiResponse::success($data, 'Success', 200, $request_time);
+                return ApiResponse::response($data, [
+                    'message' => [
+                        'success' => [
+                            'Date fetch successfully'
+                        ]
+                    ]
+                ], 200, $request_time);
             }
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        'Something Went Wrong !'
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -56,10 +68,22 @@ class DocumentController extends Controller
 
         try {
             if ($data->save()) {
-                return ApiResponse::success($data, 'Success', 200, $request_time);
+                return ApiResponse::response($data, [
+                    'message' => [
+                        'success' => [
+                            'Data store success'
+                        ]
+                    ]
+                ], 200, $request_time);
             }
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        'Something Went Wrong !'
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -82,9 +106,19 @@ class DocumentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, document $document)
+    public function update(Request $request, $id)
     {
         $request_time = date('y-m-d h:i:s');
+
+        $document = Document::find($id);
+        if (is_null($document)) {
+            return ApiResponse::response($document, [
+                'error' => [
+                    'Document not found'
+                ]
+            ], 444, $request_time);
+        }
+
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
@@ -101,10 +135,22 @@ class DocumentController extends Controller
         $document->added_by = auth()->id();
         try {
             if ($document->save()) {
-                return ApiResponse::success($document, 'data updated successfull', 200, $request_time);
+                return ApiResponse::response($document, [
+                    'message' => [
+                        'success' => [
+                            'Document updated successfully'
+                        ]
+                    ]
+                ], 200, $request_time);
             }
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -116,10 +162,22 @@ class DocumentController extends Controller
         $request_time = date('Y-m-d H:i:s');
         try {
             if ($document->delete()) {
-                return ApiResponse::success($document, 'data deleted successfull', 200, $request_time);
+                return ApiResponse::response($document, [
+                    'message' => [
+                        'success' => [
+                            'Document Removed'
+                        ]
+                    ]
+                ], 200, $request_time);
             }
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 }

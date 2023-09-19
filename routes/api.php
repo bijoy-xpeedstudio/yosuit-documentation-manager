@@ -16,7 +16,7 @@ use App\Http\Controllers\FolderController;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register']);
+// Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:api'])->group(function () {
@@ -24,5 +24,6 @@ Route::middleware(['auth:api'])->group(function () {
     // Add other routes that require authentication here
     Route::apiResource('document', DocumentController::class);
     Route::apiResource('folder', FolderController::class);
-    
+
+    Route::post('update-user/{id?}', [AuthController::class, 'update_user']);
 });
