@@ -23,7 +23,7 @@ class Document extends Model
     }
     public function tags()
     {
-        return $this->morphToMany('App\Models\Tag', 'taggables');
+        return $this->morphToMany(Tag::class, 'taggable');
     }
     public function cid()
     {

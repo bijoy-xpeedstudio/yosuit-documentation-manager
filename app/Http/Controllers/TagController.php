@@ -16,10 +16,17 @@ class TagController extends Controller
         $request_time = date('y-m-d h:i:s');
         try {
             $data =  Tag::with( 'addedBy')->orderBy('id','desc')->get();
-            return ApiResponse::success($data, 'Success', 200, $request_time);
+            return ApiResponse::response($data, [
+                'success' => [
+                    'Tags Fetched  successfully'
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return $e;
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'error' => [
+                    $e->getMessage()
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -44,9 +51,18 @@ class TagController extends Controller
             $tag->added_by=auth()->id();
             $tag->save();
             $data=Tag::with( 'addedBy')->find($tag->id);
-            return ApiResponse::success($data, 'Success', 200, $request_time);
+            return ApiResponse::response($data, [
+                'success' => [
+                    'Tags Added  successfully'
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'error' => [
+                    $e->getMessage()
+                ]
+            ], 501, $request_time);
+           
         }
     }
 
@@ -61,9 +77,17 @@ class TagController extends Controller
                         ->where('tag_name', 'LIKE', "%{$search_text}%")
                         ->orderBy('id', 'desc')
                         ->get();
-            return ApiResponse::success($data, 'Success', 200, $request_time);
+            return ApiResponse::response($data, [
+                'success' => [
+                    'Tag fetch  successfully'
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'error' => [
+                    $e->getMessage()
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -88,7 +112,11 @@ class TagController extends Controller
             $tag->added_by=auth()->id();
             $tag->save();
             $data=Tag::with( 'addedBy')->find($tag->id);
-            return ApiResponse::success($data, 'Success', 200, $request_time);
+            return ApiResponse::response($data, [
+                'success' => [
+                    'Tags Updated  successfully'
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
             return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
         }
@@ -105,7 +133,11 @@ class TagController extends Controller
             $tag->delete();
             return ApiResponse::success($tag, 'Success', 200, $request_time);
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'error' => [
+                    $e->getMessage()
+                ]
+            ], 501, $request_time);
         }
     }
 }

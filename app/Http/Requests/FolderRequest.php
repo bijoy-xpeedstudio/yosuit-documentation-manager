@@ -37,6 +37,11 @@ class FolderRequest extends FormRequest
     }
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(ApiResponse::validationError($validator->errors(), 'Validation Failed', 422));
+        throw new HttpResponseException(ApiResponse::response($validator->errors(), [
+            'error' => [
+                'Validation failed'
+            ]
+        ], 422,date('Y-m-d H:i:s')));
+       
     }
 }
