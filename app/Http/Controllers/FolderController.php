@@ -16,7 +16,7 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            $data = Folder::with('subFolder','addedBy')->where(['parent_id' => null])->where('is_active', true)->orderBy('id')->get();
             return ApiResponse::success($data, 'Success', 200, $request_time);
         } catch (\Exception $e) {
             return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
@@ -37,20 +37,20 @@ class FolderController extends Controller
     public function store(FolderRequest $request)
     {
         $request_time = date('y-m-d h:i:s');
-        $request = $request->validated();
+        $requestData = $request->validated();
         try {
             $folder = new Folder();
             $folder->parent_id = $request['parent_id'] ?? null;
-            $folder->name = $request['name'];
-            $folder->is_active = $request['is_active'] ?? true;
+            $folder->name = $requestData['name'];
+            $folder->is_active = $request['is_active'] ?? 1;
+            $folder->added_by=auth()->id();
             $folder->save();
-            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            $folder = Folder::with('subFolder','addedBy')->where(['parent_id' => null])->find($folder->id);
             return ApiResponse::success($folder, 'Success', 200, $request_time);
         } catch (\Exception $e) {
+            return $e;
             return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
         }
-
-        return ApiResponse::success($folder, 'Success', 200, $request_time);
     }
 
     /**
@@ -80,14 +80,14 @@ class FolderController extends Controller
     public function update(FolderRequest $request, string $id)
     {
         $request_time = date('y-m-d h:i:s');
-        $request = $request->validated();
+        $requestData = $request->validated();
         try {
             $folder = Folder::find($id);
             $folder->parent_id = $request['parent_id'] ?? null;
-            $folder->name = $request['name'];
+            $folder->name = $requestData['name'];
             $folder->is_active = $request['is_active'] ?? true;
             $folder->save();
-            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            $folder = Folder::with('subFolder','addedBy')->where(['parent_id' => null])->find($folder->id);
             return ApiResponse::success($folder, 'Success', 200, $request_time);
         } catch (\Exception $e) {
             return $e->getMessage();

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\TagController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,5 +25,6 @@ Route::middleware(['auth:api'])->group(function () {
     // Add other routes that require authentication here
     Route::apiResource('document', DocumentController::class);
     Route::apiResource('folder', FolderController::class);
+    Route::apiResource('tag', TagController::class);
     
 });

@@ -17,4 +17,8 @@ class Tag extends Model
     {
         return $this->morphToMany('App\Models\Folder', 'taggables');
     }
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by', 'id');
+    }
 }
