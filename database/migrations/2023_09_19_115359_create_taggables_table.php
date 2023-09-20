@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('folders', function (Blueprint $table) {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('name');
-            $table->boolean('is_active')->default(true);
-            $table->foreignId('added_by')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('tag_id');
+            $table->unsignedBigInteger('taggable_id');
+            $table->string('taggable_type');
             $table->timestamps();
+            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('folders');
+        Schema::dropIfExists('taggables');
     }
 };

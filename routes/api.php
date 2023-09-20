@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\TagController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,6 +25,11 @@ Route::middleware(['auth:api'])->group(function () {
     // Add other routes that require authentication here
     Route::apiResource('document', DocumentController::class);
     Route::apiResource('folder', FolderController::class);
+<<<<<<< HEAD
+    Route::apiResource('tag', TagController::class);
+    
+=======
 
     Route::post('update-user/{id?}', [AuthController::class, 'update_user']);
+>>>>>>> 14bb553fd907437509de5084e471c59596fbd6ec
 });

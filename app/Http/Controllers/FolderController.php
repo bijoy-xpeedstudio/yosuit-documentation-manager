@@ -49,19 +49,22 @@ class FolderController extends Controller
     public function store(FolderRequest $request)
     {
         $request_time = date('y-m-d h:i:s');
-        $request = $request->validated();
+        $requestData = $request->validated();
         try {
             $folder = new Folder();
             $folder->parent_id = $request['parent_id'] ?? null;
-            $folder->name = $request['name'];
-            $folder->is_active = $request['is_active'] ?? true;
+            $folder->name = $requestData['name'];
+            $folder->is_active = $request['is_active'] ?? 1;
+            $folder->added_by=auth()->id();
             $folder->save();
 
-            $folder = Folder::with('subFolder')->where([
-                'parent_id' => null,
-                'is_active' => true
-            ])->orderBy('id')->get();
-
+            $folder = new Folder();
+            $folder->parent_id = $request['parent_id'] ?? null;
+            $folder->name = $requestData['name'];
+            $folder->is_active = $request['is_active'] ?? 1;
+            $folder->added_by=auth()->id();
+            $folder->save();
+            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
             return ApiResponse::response($folder, [
                 'message' => [
                     'success' => [
@@ -119,19 +122,14 @@ class FolderController extends Controller
     public function update(FolderRequest $request, string $id)
     {
         $request_time = date('y-m-d h:i:s');
-        $request = $request->validated();
+        $requestData = $request->validated();
         try {
             $folder = Folder::find($id);
             $folder->parent_id = $request['parent_id'] ?? null;
-            $folder->name = $request['name'];
+            $folder->name = $requestData['name'];
             $folder->is_active = $request['is_active'] ?? true;
             $folder->save();
-
-            $folder = Folder::with('subFolder')->where([
-                'parent_id' => null,
-                'is_active' => true
-            ])->orderBy('id')->get();
-
+            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
             return ApiResponse::response($folder, [
                 'message' => [
                     'success' => [

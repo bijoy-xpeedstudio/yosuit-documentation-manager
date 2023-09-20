@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Folder extends Model
+class Tag extends Model
 {
     use HasFactory;
-
-    public function subFolder(){
-        return $this->hasMany(Folder::class, 'parent_id', 'id');
-        
-    }
-    public function tags()
+    public function documents()
     {
-        return $this->morphToMany('App\Models\Tag', 'taggables');
+        return $this->morphToMany('App\Models\Document', 'taggables');
+    }
+
+    public function videos()
+    {
+        return $this->morphToMany('App\Models\Folder', 'taggables');
     }
     public function addedBy()
     {
