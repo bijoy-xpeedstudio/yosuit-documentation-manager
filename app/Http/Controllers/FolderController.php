@@ -16,10 +16,22 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Folder::with('subFolder','addedBy')->where(['parent_id' => null])->where('is_active', true)->orderBy('id')->get();
-            return ApiResponse::success($data, 'Success', 200, $request_time);
+            $data = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            return ApiResponse::response($data, [
+                'message' => [
+                    'success' => [
+                        'Folder Fetch Successfully'
+                    ]
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -45,11 +57,29 @@ class FolderController extends Controller
             $folder->is_active = $request['is_active'] ?? 1;
             $folder->added_by=auth()->id();
             $folder->save();
-            $folder = Folder::with('subFolder','addedBy')->where(['parent_id' => null])->find($folder->id);
-            return ApiResponse::success($folder, 'Success', 200, $request_time);
+
+            $folder = new Folder();
+            $folder->parent_id = $request['parent_id'] ?? null;
+            $folder->name = $requestData['name'];
+            $folder->is_active = $request['is_active'] ?? 1;
+            $folder->added_by=auth()->id();
+            $folder->save();
+            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            return ApiResponse::response($folder, [
+                'message' => [
+                    'success' => [
+                        'Folder save successfully'
+                    ]
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return $e;
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -61,9 +91,21 @@ class FolderController extends Controller
         $request_time = date('y-m-d h:i:s');
         try {
             $data = Folder::findorFail($id);
-            return ApiResponse::success($data, 'Success', 200, $request_time);
+            return ApiResponse::response($data, [
+                'message' => [
+                    'success' => [
+                        'Data fetch successfully'
+                    ]
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -87,11 +129,22 @@ class FolderController extends Controller
             $folder->name = $requestData['name'];
             $folder->is_active = $request['is_active'] ?? true;
             $folder->save();
-            $folder = Folder::with('subFolder','addedBy')->where(['parent_id' => null])->find($folder->id);
-            return ApiResponse::success($folder, 'Success', 200, $request_time);
+            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            return ApiResponse::response($folder, [
+                'message' => [
+                    'success' => [
+                        'Folder Update successfully'
+                    ]
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return $e->getMessage();
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -108,9 +161,21 @@ class FolderController extends Controller
             }
             $folder->delete();
             $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
-            return ApiResponse::success($folder, 'Success', 200, $request_time);
+            return ApiResponse::response($folder, [
+                'message' => [
+                    'success' => [
+                        'Folder removed successfully'
+                    ]
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
         }
     }
 }
