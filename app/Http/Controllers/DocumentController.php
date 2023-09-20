@@ -68,6 +68,7 @@ class DocumentController extends Controller
 
         try {
             if ($data->save()) {
+                $data->tags()->attach(json_decode($request->tags, true));
                 return ApiResponse::response($data, [
                     'message' => [
                         'success' => [
@@ -135,6 +136,8 @@ class DocumentController extends Controller
         $document->added_by = auth()->id();
         try {
             if ($document->save()) {
+                $tags = json_decode($request->input('tags', []), true);
+                $folder->tags()->sync($tags);
                 return ApiResponse::response($document, [
                     'message' => [
                         'success' => [

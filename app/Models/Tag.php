@@ -8,14 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     use HasFactory;
-    public function documents()
-    {
-        return $this->morphToMany('App\Models\Document', 'taggables');
-    }
+    // public function documents()
+    // {
+    //     return $this->morphToMany('App\Models\Document', 'taggables');
+    // }
 
-    public function videos()
+    // public function videos()
+    // {
+    //     return $this->morphToMany('App\Models\Folder', 'taggables');
+    // }
+    public function taggable()
     {
-        return $this->morphToMany('App\Models\Folder', 'taggables');
+        return $this->morphTo();
     }
     public function addedBy()
     {

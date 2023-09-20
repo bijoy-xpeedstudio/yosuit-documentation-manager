@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Folder;
 use App\Http\Responses\ApiResponse;
 use App\Http\Requests\FolderRequest;
-
+use Illuminate\Support\Facades\DB;
 class FolderController extends Controller
 {
     /**
@@ -16,21 +16,17 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            $data = Folder::with('subFolder','addedBy','tags')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
             return ApiResponse::response($data, [
-                'message' => [
                     'success' => [
                         'Folder Fetch Successfully'
                     ]
-                ]
             ], 200, $request_time);
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
                     'error' => [
                         $e->getMessage()
                     ]
-                ]
             ], 501, $request_time);
         }
     }
@@ -57,20 +53,13 @@ class FolderController extends Controller
             $folder->is_active = $request['is_active'] ?? 1;
             $folder->added_by=auth()->id();
             $folder->save();
-
-            $folder = new Folder();
-            $folder->parent_id = $request['parent_id'] ?? null;
-            $folder->name = $requestData['name'];
-            $folder->is_active = $request['is_active'] ?? 1;
-            $folder->added_by=auth()->id();
-            $folder->save();
-            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            $folder->tags()->attach(json_decode($request->tags, true));
+            $folder = Folder::with('subFolder','addedBy','tags')->where('is_active', true)
+                        ->where('id',$folder->id)->get();
             return ApiResponse::response($folder, [
-                'message' => [
                     'success' => [
                         'Folder save successfully'
                     ]
-                ]
             ], 200, $request_time);
         } catch (\Exception $e) {
             return ApiResponse::response([], [
@@ -90,21 +79,17 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Folder::findorFail($id);
+            $data =Folder::with('subFolder','addedBy','tags')->findorFail($id);
             return ApiResponse::response($data, [
-                'message' => [
                     'success' => [
                         'Data fetch successfully'
                     ]
-                ]
             ], 200, $request_time);
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
                     'error' => [
                         $e->getMessage()
                     ]
-                ]
             ], 501, $request_time);
         }
     }
@@ -119,30 +104,34 @@ class FolderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(FolderRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         $request_time = date('y-m-d h:i:s');
-        $requestData = $request->validated();
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        DB::beginTransaction();
         try {
             $folder = Folder::find($id);
             $folder->parent_id = $request['parent_id'] ?? null;
-            $folder->name = $requestData['name'];
-            $folder->is_active = $request['is_active'] ?? true;
+            $folder->name = $request['name'];
+            $folder->is_active = $request['is_active']?? 1;
+            $folder->added_by=auth()->id();
             $folder->save();
-            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            $tags = json_decode($request->input('tags', []), true);
+            $folder->tags()->sync($tags);
+            DB::commit();
+            $folder = Folder::with('subFolder','addedBy','tags')->findorFail($id);
             return ApiResponse::response($folder, [
-                'message' => [
-                    'success' => [
-                        'Folder Update successfully'
-                    ]
+                'success' => [
+                    'Folder Update successfully'
                 ]
             ], 200, $request_time);
         } catch (\Exception $e) {
+            DB::rollBack();
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        $e->getMessage()
-                    ]
+                'error' => [
+                    $e->getMessage()
                 ]
             ], 501, $request_time);
         }
@@ -162,20 +151,37 @@ class FolderController extends Controller
             $folder->delete();
             $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
             return ApiResponse::response($folder, [
-                'message' => [
-                    'success' => [
-                        'Folder removed successfully'
-                    ]
+                'success' => [
+                    'Folder removed successfully'
                 ]
             ], 200, $request_time);
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        $e->getMessage()
-                    ]
+                'error' => [
+                    $e->getMessage()
                 ]
             ], 501, $request_time);
         }
+    }
+    // Demo method for Polymorphic Pivot Integration
+    public function polyPivot(Request $request){
+        DB::beginTransaction();
+        try{
+            $folder = new Folder();
+            $folder->parent_id = $request['parent_id'] ?? null;
+            $folder->name = $request['name'];
+            $folder->is_active = $request['is_active'] ?? 1;
+            $folder->added_by=auth()->id();
+            $folder->save();
+            $folder->tags()->attach(json_decode($request->tags, true));
+            DB::commit();
+            return Folder::with('tags')->find($folder->id);
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+
+        }
+            
     }
 }
