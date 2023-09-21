@@ -25,4 +25,9 @@ class Folder extends Model
     {
         return $this->belongsTo(User::class, 'added_by', 'id');
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class,  'cid', 'id');
+    }
 }
