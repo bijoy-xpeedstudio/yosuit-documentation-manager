@@ -137,7 +137,7 @@ class DocumentController extends Controller
         try {
             if ($document->save()) {
                 $tags = json_decode($request->input('tags', []), true);
-                $folder->tags()->sync($tags);
+                $document->tags()->sync($tags);
                 return ApiResponse::response($document, [
                     'message' => [
                         'success' => [
