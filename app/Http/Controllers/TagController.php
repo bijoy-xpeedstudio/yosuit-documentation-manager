@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Responses\ApiResponse;
 use App\Models\Tag;
 use App\Http\Requests\TagRequest;
+
 class TagController extends Controller
 {
 
@@ -15,7 +16,7 @@ class TagController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data =  Tag::with( 'addedBy')->orderBy('id','desc')->get();
+            $data =  Tag::with('addedBy')->orderBy('id', 'desc')->get();
             return ApiResponse::response($data, [
                 'success' => [
                     'Tags Fetched  successfully'
@@ -47,10 +48,10 @@ class TagController extends Controller
         $request = $request->validated();
         try {
             $tag = new Tag();
-            $tag->tag_name=$request['tag_name'];
-            $tag->added_by=auth()->id();
+            $tag->tag_name = $request['tag_name'];
+            $tag->added_by = auth()->id();
             $tag->save();
-            $data=Tag::with( 'addedBy')->find($tag->id);
+            $data = Tag::with('addedBy')->find($tag->id);
             return ApiResponse::response($data, [
                 'success' => [
                     'Tags Added  successfully'
@@ -62,7 +63,6 @@ class TagController extends Controller
                     $e->getMessage()
                 ]
             ], 501, $request_time);
-           
         }
     }
 
@@ -74,9 +74,9 @@ class TagController extends Controller
         $request_time = date('y-m-d h:i:s');
         try {
             $data = Tag::with('addedBy')
-                        ->where('tag_name', 'LIKE', "%{$search_text}%")
-                        ->orderBy('id', 'desc')
-                        ->get();
+                ->where('tag_name', 'LIKE', "%{$search_text}%")
+                ->orderBy('id', 'desc')
+                ->get();
             return ApiResponse::response($data, [
                 'success' => [
                     'Tag fetch  successfully'
@@ -107,18 +107,22 @@ class TagController extends Controller
         $request_time = date('y-m-d h:i:s');
         $request = $request->validated();
         try {
-            $tag =Tag::find($id);
-            $tag->tag_name=$request['tag_name'];
-            $tag->added_by=auth()->id();
+            $tag = Tag::find($id);
+            $tag->tag_name = $request['tag_name'];
+            $tag->added_by = auth()->id();
             $tag->save();
-            $data=Tag::with( 'addedBy')->find($tag->id);
+            $data = Tag::with('addedBy')->find($tag->id);
             return ApiResponse::response($data, [
                 'success' => [
                     'Tags Updated  successfully'
                 ]
             ], 200, $request_time);
         } catch (\Exception $e) {
-            return ApiResponse::serverException([], 'Something Went Wrong !', 501, $request_time);
+            return ApiResponse::response([], [
+                'error' => [
+                    $e->getMessage()
+                ]
+            ], 501, $request_time);
         }
     }
 
@@ -129,9 +133,13 @@ class TagController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $tag =Tag::find($id);
+            $tag = Tag::find($id);
             $tag->delete();
-            return ApiResponse::success($tag, 'Success', 200, $request_time);
+            return ApiResponse::response($tag, [
+                'success' => [
+                    'Tag has been removed'
+                ]
+            ], 200, $request_time);
         } catch (\Exception $e) {
             return ApiResponse::response([], [
                 'error' => [
