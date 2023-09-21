@@ -42,6 +42,9 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\HandleAuthorizationException::class,
+            
+            
         ],
     ];
 
@@ -53,6 +56,11 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
+        'isAdmin' => \App\Http\Middleware\IsAdminMiddleware::class,
+        'isEditor' => \App\Http\Middleware\IsEditorMiddleware::class,
+        'isUser' => \App\Http\Middleware\IsUserMiddleware::class,
+        'handle.authorization' => \App\Http\Middleware\HandleAuthorizationException::class,
+        'isAdminOrEditor' => \App\Http\Middleware\IsAdminOrEditor::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,

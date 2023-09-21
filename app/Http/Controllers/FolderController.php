@@ -16,7 +16,7 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Folder::with('subFolder','addedBy','tags')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            $data = Folder::with('subFolder','addedBy','tags', 'documents')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
             return ApiResponse::response($data, [
                     'success' => [
                         'Folder Fetch Successfully'
@@ -79,7 +79,7 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data =Folder::with('subFolder','addedBy','tags')->findorFail($id);
+            $data =Folder::with('subFolder','addedBy','tags','documents')->findorFail($id);
             return ApiResponse::response($data, [
                     'success' => [
                         'Data fetch successfully'

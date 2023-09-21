@@ -8,9 +8,9 @@ use App\Models\Tag;
 use App\Http\Requests\TagRequest;
 class TagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+
+
     public function index()
     {
         $request_time = date('y-m-d h:i:s');
