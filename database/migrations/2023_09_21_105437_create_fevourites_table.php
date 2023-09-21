@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('fevourites', function (Blueprint $table) {
             $table->id();
-            $table->enum('model', ['fevourite', 'location', 'document']);
+            $table->enum('model', ['fevourite', 'location', 'document', 'folder']);
             $table->bigInteger('model_id');
 
             $table->unsignedBigInteger('user_id');

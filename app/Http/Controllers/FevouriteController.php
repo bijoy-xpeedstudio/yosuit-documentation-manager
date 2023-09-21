@@ -38,7 +38,7 @@ class FevouriteController extends Controller
     {
         $request_time = date('Y-m-d H:i:s');
         $request->validate([
-            'type' => 'in:fevourite,location,document',
+            'type' => 'in:fevourite,location,document,folder',
             'fevourite_id' => 'required|numeric'
         ]);
 
