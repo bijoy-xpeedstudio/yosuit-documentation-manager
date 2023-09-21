@@ -27,10 +27,8 @@ class DocumentController extends Controller
             }
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        'Something Went Wrong !'
-                    ]
+                'error' => [
+                    'Something Went Wrong !'
                 ]
             ], 501, $request_time);
         }
@@ -70,19 +68,15 @@ class DocumentController extends Controller
             if ($data->save()) {
                 $data->tags()->attach(json_decode($request->tags, true));
                 return ApiResponse::response($data, [
-                    'message' => [
-                        'success' => [
-                            'Data store success'
-                        ]
+                    'success' => [
+                        'Data store success'
                     ]
                 ], 200, $request_time);
             }
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        'Something Went Wrong !'
-                    ]
+                'error' => [
+                    'Something Went Wrong !'
                 ]
             ], 501, $request_time);
         }
@@ -139,19 +133,15 @@ class DocumentController extends Controller
                 $tags = json_decode($request->input('tags', []), true);
                 $document->tags()->sync($tags);
                 return ApiResponse::response($document, [
-                    'message' => [
-                        'success' => [
-                            'Document updated successfully'
-                        ]
+                    'success' => [
+                        'Document updated successfully'
                     ]
                 ], 200, $request_time);
             }
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        $e->getMessage()
-                    ]
+                'error' => [
+                    $e->getMessage()
                 ]
             ], 501, $request_time);
         }
@@ -160,9 +150,18 @@ class DocumentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(document $document)
+    public function destroy($document)
     {
         $request_time = date('Y-m-d H:i:s');
+
+        $document = Document::find($document);
+        if (is_null($document)) {
+            return ApiResponse::response($document, [
+                'error' => [
+                    'Document not found'
+                ]
+            ], 444, $request_time);
+        }
         try {
             if ($document->delete()) {
                 return ApiResponse::response($document, [

@@ -108,6 +108,13 @@ class TagController extends Controller
         $request = $request->validated();
         try {
             $tag = Tag::find($id);
+            if (is_null($tag)) {
+                return ApiResponse::response($tag, [
+                    'error' => [
+                        'Document not found'
+                    ]
+                ], 444, $request_time);
+            }
             $tag->tag_name = $request['tag_name'];
             $tag->added_by = auth()->id();
             $tag->save();
@@ -134,6 +141,13 @@ class TagController extends Controller
         $request_time = date('y-m-d h:i:s');
         try {
             $tag = Tag::find($id);
+            if (is_null($tag)) {
+                return ApiResponse::response($tag, [
+                    'error' => [
+                        'Document not found'
+                    ]
+                ], 444, $request_time);
+            }
             $tag->delete();
             return ApiResponse::response($tag, [
                 'success' => [
