@@ -11,4 +11,10 @@ class Fevourite extends Model
     protected $fillable = [
         'model', 'model_id', 'user_id'
     ];
+
+
+    public function userId()
+    {
+        return $this->belongsTo(User::class, 'id', 'user_id');
+    }
 }

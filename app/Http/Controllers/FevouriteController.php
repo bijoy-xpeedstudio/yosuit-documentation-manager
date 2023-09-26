@@ -91,8 +91,36 @@ class FevouriteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Fevourite $fevourite)
+    public function destroy($fevourite)
     {
-        //
+        $request_time = date('Y-m-d H:i:s');
+
+        $fevourite = Fevourite::find($fevourite);
+        if (is_null($fevourite)) {
+            return ApiResponse::response($fevourite, [
+                'error' => [
+                    'Fevourite not found'
+                ]
+            ], 444, $request_time);
+        }
+        try {
+            if ($fevourite->delete()) {
+                return ApiResponse::response($fevourite, [
+                    'message' => [
+                        'success' => [
+                            'Fevourite Removed'
+                        ]
+                    ]
+                ], 200, $request_time);
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::response([], [
+                'message' => [
+                    'error' => [
+                        $e->getMessage()
+                    ]
+                ]
+            ], 501, $request_time);
+        }
     }
 }

@@ -15,7 +15,7 @@ class DocumentController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Document::with('cid.subFolder', 'addedBy')->paginate(16);
+            $data = Document::with('cid.subFolder', 'addedBy', 'tags')->paginate(16);
             if ($data) {
                 return ApiResponse::response($data, [
                     'message' => [
