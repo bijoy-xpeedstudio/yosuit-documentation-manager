@@ -51,22 +51,23 @@ class DocumentController extends Controller
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
-            'tags' => 'nullable|string',
-            'json' => 'required|string',
+            'tags' => 'required|array',
+            'tags.*' => 'integer',
+            'json' => 'required',
             'type' => 'required|numeric'
         ]);
 
         $data = new Document();
         $data->cid = $request->cid;
         $data->title = $request->title;
-        $data->tags = $request->tags;
-        $data->json = $request->json;
+        $data->tags = json_encode($request->tags);
+        $data->json = json_encode($request->json);
         $data->type = $request->type;
         $data->added_by = auth()->id();
 
         try {
             if ($data->save()) {
-                $data->tags()->attach(json_decode($request->tags, true));
+                $data->tags()->attach(json_decode(json_encode($request->tags), true));
                 return ApiResponse::response($data, [
                     'success' => [
                         'Data store success'
@@ -76,7 +77,7 @@ class DocumentController extends Controller
         } catch (\Exception $e) {
             return ApiResponse::response([], [
                 'error' => [
-                    'Something Went Wrong !'
+                    $e->getMessage()
                 ]
             ], 501, $request_time);
         }
@@ -117,11 +118,11 @@ class DocumentController extends Controller
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
-            'tags' => 'required|string',
-            'json' => 'required|string',
+            'tags' => 'required|array',
+            'tags.*' => 'integer',
+            'json' => 'required',
             'type' => 'required|numeric'
         ]);
-
         $document->cid = $request->cid;
         $document->title = $request->title;
         $document->tags = $request->tags;
