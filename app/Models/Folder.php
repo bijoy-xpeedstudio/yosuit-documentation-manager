@@ -9,14 +9,11 @@ class Folder extends Model
 {
     use HasFactory;
 
-    public function subFolder(){
+    public function subFolder()
+    {
         return $this->hasMany(Folder::class, 'parent_id', 'id');
-        
     }
-    // public function tags()
-    // {
-    //     return $this->morphToMany(Tag::class, 'taggable');
-    // }
+
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');

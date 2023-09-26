@@ -51,7 +51,7 @@ class DocumentController extends Controller
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
-            'tags' => 'required|string',
+            'tags' => 'nullable|string',
             'json' => 'required|string',
             'type' => 'required|numeric'
         ]);
