@@ -80,7 +80,7 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Folder::with('subFolder', 'addedBy', 'tags')->where('id', $id)->first();
+            $data = Folder::with('subFolder', 'addedBy', 'tags', 'documents')->where('id', $id)->first();
 
             if (is_null($data)) {
                 return ApiResponse::response($data, [
