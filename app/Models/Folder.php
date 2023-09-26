@@ -27,4 +27,11 @@ class Folder extends Model
     {
         return $this->hasMany(Document::class,  'cid', 'id');
     }
+
+    public function newFromBuilder($attributes = [], $connection = null)
+    {
+        $model = parent::newFromBuilder($attributes, $connection);
+        $model->type = 'folder';
+        return $model;
+    }
 }
