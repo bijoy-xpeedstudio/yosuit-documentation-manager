@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\FevouriteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,7 +23,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
-    Route::post('update-user/{id?}', [AuthController::class, 'update_user'])->middleware('isAdminOrEditor');
+    Route::post('/store-user', [AuthController::class, 'store_user']);
+    Route::post('/update-user/{id?}', [AuthController::class, 'update_user'])->middleware('isAdmin');
     /**
      * Documents
      */
@@ -48,4 +50,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('tag/show/{tag}', [TagController::class, 'show']);
     Route::post('tag/update/{tag}', [TagController::class, 'update'])->middleware('isAdminOrEditor');
     Route::get('tag/delete/{tag}', [TagController::class, 'destroy'])->middleware('isAdminOrEditor');
+
+    /**
+     * Fevourite
+     */
+
+    Route::get('fevourite', [FevouriteController::class, 'index']);
+    Route::post('fevourite/store', [FevouriteController::class, 'store']);
 });

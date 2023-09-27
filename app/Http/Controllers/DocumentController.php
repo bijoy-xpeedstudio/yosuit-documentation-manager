@@ -15,7 +15,7 @@ class DocumentController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data = Document::with('cid.subFolder', 'addedBy')->paginate(16);
+            $data = Document::with('cid.subFolder', 'addedBy', 'tags')->paginate(16);
             if ($data) {
                 return ApiResponse::response($data, [
                     'message' => [
@@ -27,10 +27,8 @@ class DocumentController extends Controller
             }
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        'Something Went Wrong !'
-                    ]
+                'error' => [
+                    'Something Went Wrong !'
                 ]
             ], 501, $request_time);
         }
@@ -53,36 +51,33 @@ class DocumentController extends Controller
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
-            'tags' => 'required|string',
-            'json' => 'required|string',
+            'tags' => 'required|array',
+            'tags.*' => 'integer',
+            'json' => 'required',
             'type' => 'required|numeric'
         ]);
 
         $data = new Document();
         $data->cid = $request->cid;
         $data->title = $request->title;
-        $data->tags = $request->tags;
-        $data->json = $request->json;
+        $data->tags = json_encode($request->tags);
+        $data->json = json_encode($request->json);
         $data->type = $request->type;
         $data->added_by = auth()->id();
 
         try {
             if ($data->save()) {
-                $data->tags()->attach(json_decode($request->tags, true));
+                $data->tags()->attach(json_decode(json_encode($request->tags), true));
                 return ApiResponse::response($data, [
-                    'message' => [
-                        'success' => [
-                            'Data store success'
-                        ]
+                    'success' => [
+                        'Data store success'
                     ]
                 ], 200, $request_time);
             }
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        'Something Went Wrong !'
-                    ]
+                'error' => [
+                    $e->getMessage()
                 ]
             ], 501, $request_time);
         }
@@ -123,11 +118,11 @@ class DocumentController extends Controller
         $request->validate([
             'cid' => 'required|numeric',
             'title' => 'required|string|max:255',
-            'tags' => 'required|string',
-            'json' => 'required|string',
+            'tags' => 'required|array',
+            'tags.*' => 'integer',
+            'json' => 'required',
             'type' => 'required|numeric'
         ]);
-
         $document->cid = $request->cid;
         $document->title = $request->title;
         $document->tags = $request->tags;
@@ -139,19 +134,15 @@ class DocumentController extends Controller
                 $tags = json_decode($request->input('tags', []), true);
                 $document->tags()->sync($tags);
                 return ApiResponse::response($document, [
-                    'message' => [
-                        'success' => [
-                            'Document updated successfully'
-                        ]
+                    'success' => [
+                        'Document updated successfully'
                     ]
                 ], 200, $request_time);
             }
         } catch (\Exception $e) {
             return ApiResponse::response([], [
-                'message' => [
-                    'error' => [
-                        $e->getMessage()
-                    ]
+                'error' => [
+                    $e->getMessage()
                 ]
             ], 501, $request_time);
         }
@@ -160,9 +151,18 @@ class DocumentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(document $document)
+    public function destroy($document)
     {
         $request_time = date('Y-m-d H:i:s');
+
+        $document = Document::find($document);
+        if (is_null($document)) {
+            return ApiResponse::response($document, [
+                'error' => [
+                    'Document not found'
+                ]
+            ], 444, $request_time);
+        }
         try {
             if ($document->delete()) {
                 return ApiResponse::response($document, [

@@ -9,14 +9,11 @@ class Folder extends Model
 {
     use HasFactory;
 
-    public function subFolder(){
+    public function subFolder()
+    {
         return $this->hasMany(Folder::class, 'parent_id', 'id');
-        
     }
-    // public function tags()
-    // {
-    //     return $this->morphToMany(Tag::class, 'taggable');
-    // }
+
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
@@ -29,5 +26,12 @@ class Folder extends Model
     public function documents()
     {
         return $this->hasMany(Document::class,  'cid', 'id');
+    }
+
+    public function newFromBuilder($attributes = [], $connection = null)
+    {
+        $model = parent::newFromBuilder($attributes, $connection);
+        $model->type = 'folder';
+        return $model;
     }
 }

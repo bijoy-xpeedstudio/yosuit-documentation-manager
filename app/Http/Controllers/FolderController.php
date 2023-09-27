@@ -81,7 +81,15 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         try {
-            $data =Folder::with('subFolder','addedBy','tags','documents')->findorFail($id);
+            $data = Folder::with('subFolder', 'addedBy', 'tags', 'documents')->where('id', $id)->first();
+
+            if (is_null($data)) {
+                return ApiResponse::response($data, [
+                    'error' => [
+                        'Document not found'
+                    ]
+                ], 444, $request_time);
+            }
             return ApiResponse::response($data, [
                 'success' => [
                     'Data fetch successfully'
@@ -115,6 +123,13 @@ class FolderController extends Controller
         DB::beginTransaction();
         try {
             $folder = Folder::find($id);
+            if (is_null($folder)) {
+                return ApiResponse::response($folder, [
+                    'error' => [
+                        'Document not found'
+                    ]
+                ], 444, $request_time);
+            }
             $folder->parent_id = $request['parent_id'] ?? $folder->parent_id;
             $folder->name = $request['name'] ?? $folder->name;
             $folder->is_active = $request['is_active'] ?? 1;
@@ -149,6 +164,13 @@ class FolderController extends Controller
     {
         $request_time = date('Y-m-d H:i:s');
         $folder = Folder::find($id);
+        if (is_null($folder)) {
+            return ApiResponse::response($folder, [
+                'error' => [
+                    'Document not found'
+                ]
+            ], 444, $request_time);
+        }
         try {
             if ($folder->parent_id == null) {
                 Folder::where('parent_id', $folder->id)->delete();

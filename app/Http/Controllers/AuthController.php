@@ -99,4 +99,41 @@ class AuthController extends Controller
             ], 501, $request_time);
         }
     }
+
+    public function store_user(Request $request)
+    {
+        $request_time = date('Y-m-d H:i:s');
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'password' => 'required|confirmed|min:6',
+            'email' => 'required|email|string|unique:users,email',
+            'role' => 'in:admin,user,editor'
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->password = \Hash::make($request->password);
+        $user->email = $request->email;
+
+        if (auth()->user()->role == 'admin') {
+            $user->role = $request->role;
+        }
+
+        try {
+            if ($user->save()) {
+                return ApiResponse::response($user, [
+                    'success' => [
+                        'User has been added'
+                    ]
+                ], 200, $request_time);
+            }
+        } catch (\Exception $e) {
+            return ApiResponse::response([], [
+                'error' => [
+                    $e->getMessage()
+                ]
+            ], 501, $request_time);
+        }
+    }
 }
