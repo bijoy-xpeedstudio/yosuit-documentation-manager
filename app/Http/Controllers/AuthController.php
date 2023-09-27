@@ -21,6 +21,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'is_active' => 1,
+            'role' => $request->role??'user'
         ]);
 
         $token = $user->createToken('AppName')->accessToken;

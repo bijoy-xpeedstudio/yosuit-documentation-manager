@@ -105,7 +105,9 @@ class TagController extends Controller
     public function update(TagRequest $request, string $id)
     {
         $request_time = date('y-m-d h:i:s');
-        $request = $request->validated();
+        $request->validate([
+            'tag_name' => 'nullable|string|max:255',
+        ]);
         try {
             $tag = Tag::find($id);
             if (is_null($tag)) {
@@ -115,7 +117,7 @@ class TagController extends Controller
                     ]
                 ], 444, $request_time);
             }
-            $tag->tag_name = $request['tag_name'];
+            $tag->tag_name = $request['tag_name']?? $tag->tag_name;
             $tag->added_by = auth()->id();
             $tag->save();
             $data = Tag::with('addedBy')->find($tag->id);

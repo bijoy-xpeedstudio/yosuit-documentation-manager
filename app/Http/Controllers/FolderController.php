@@ -73,6 +73,7 @@ class FolderController extends Controller
         }
     }
 
+    
     /**
      * Display the specified resource.
      */
@@ -117,12 +118,11 @@ class FolderController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
         ]);
         DB::beginTransaction();
         try {
             $folder = Folder::find($id);
-
             if (is_null($folder)) {
                 return ApiResponse::response($folder, [
                     'error' => [
@@ -130,14 +130,16 @@ class FolderController extends Controller
                     ]
                 ], 444, $request_time);
             }
-
-            $folder->parent_id = $request['parent_id'] ?? null;
-            $folder->name = $request['name'];
+            $folder->parent_id = $request['parent_id'] ?? $folder->parent_id;
+            $folder->name = $request['name'] ?? $folder->name;
             $folder->is_active = $request['is_active'] ?? 1;
             $folder->added_by = auth()->id();
             $folder->save();
-            $tags = json_decode($request->input('tags', []), true);
-            $folder->tags()->sync($tags);
+            //$tags = json_decode($request->input('tags', []), true);
+            $tags = $request->input('tags', []);
+            if($tags){
+                $folder->tags()->sync($tags);
+            }
             DB::commit();
             $folder = Folder::with('subFolder', 'addedBy', 'tags')->findorFail($id);
             return ApiResponse::response($folder, [

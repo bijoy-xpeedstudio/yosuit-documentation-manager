@@ -24,7 +24,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/store-user', [AuthController::class, 'store_user']);
-    Route::post('/update-user/{id?}', [AuthController::class, 'update_user']);
+    Route::post('/update-user/{id?}', [AuthController::class, 'update_user'])->middleware('isAdmin');
     /**
      * Documents
      */
