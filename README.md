@@ -20,3 +20,7 @@ Install passport
 Make this project live
 
 	php artisan serve
+
+Run docker to run following command 
+
+	docker compose up -d

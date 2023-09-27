@@ -1,5 +1,5 @@
 # Accepted values: 8.2 - 8.1
-ARG PHP_VERSION=8.1.0
+ARG PHP_VERSION=8.2
 ARG COMPOSER_VERSION=latest
 
 # Accepted values: swoole - roadrunner
@@ -33,7 +33,7 @@ RUN composer install \
 RUN if [ ${OCTANE_SERVER} = "roadrunner" ]; then \
     if composer show | grep spiral/roadrunner-cli >/dev/null; then \
     ./vendor/bin/rr get-binary; else \
-    echo "spiral/roadrunner-cli package is not installed. exiting..."; exit 1; \
+    echo "spiral/r2oadrunner-cli package is not installed. exiting..."; exit 1; \
     fi \
     fi
 
