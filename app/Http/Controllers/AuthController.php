@@ -74,8 +74,8 @@ class AuthController extends Controller
             $user_email_validation = 'unique:users,email';
         }
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|string|' . $user_email_validation,
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|string|' . $user_email_validation,
             'role' => 'in:admin,user,editor'
         ]);
 

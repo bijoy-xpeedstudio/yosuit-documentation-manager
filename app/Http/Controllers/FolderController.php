@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Folder;
 use App\Http\Responses\ApiResponse;
 use App\Http\Requests\FolderRequest;
+use App\Models\Fevourite;
 use Illuminate\Support\Facades\DB;
 
 class FolderController extends Controller
@@ -54,6 +55,13 @@ class FolderController extends Controller
             $folder->is_active = $request['is_active'] ?? 1;
             $folder->added_by = auth()->id();
             $folder->save();
+
+            $fevourite = new Fevourite();
+            $fevourite->model = 'folder';
+            $fevourite->model_id = $folder->id;
+            $fevourite->user_id = auth()->id();
+            $fevourite->save();
+
             $folder->tags()->attach(json_decode($request->tags, true));
             $folder = Folder::with('subFolder', 'addedBy', 'tags')->where('is_active', true)
                 ->where('id', $folder->id)->get();

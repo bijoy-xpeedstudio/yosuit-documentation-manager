@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Fevourite;
 use Illuminate\Http\Request;
 use App\Http\Responses\ApiResponse;
+use App\Models\Document;
+use App\Models\Folder;
 
 class FevouriteController extends Controller
 {
@@ -15,7 +17,30 @@ class FevouriteController extends Controller
     {
         $request_time = date('Y-m-d H:i:s');
 
-        $data = Fevourite::where('user_id', auth()->id())->get();
+        $data = Fevourite::with('userId')->where('user_id', auth()->id())->get();
+
+        foreach ($data as $key => $value) {
+            if ($value->model == 'document') {
+                $model_data = Document::where('id', $value->model_id)->first();
+
+                $mdata = [
+                    'id' => $model_data->id,
+                    'name' => $model_data->title,
+                    'type' => 'document'
+                ];
+            } else if ($value->model == 'folder') {
+                $model_data = Folder::where('id', $value->model_id)->first();
+
+                $mdata = [
+                    'id' => $model_data->id,
+                    'name' => $model_data->name,
+                    'type' => 'folder'
+                ];
+            }
+
+            $value->model = $mdata;
+        }
+
         return ApiResponse::response($data, [
             'success' => [
                 'Tag fetch  successfully'

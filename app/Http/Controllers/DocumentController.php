@@ -116,12 +116,12 @@ class DocumentController extends Controller
         }
 
         $request->validate([
-            'cid' => 'required|numeric',
-            'title' => 'required|string|max:255',
-            'tags' => 'required|array',
+            'cid' => 'nullable|numeric',
+            'title' => 'nullable|string|max:255',
+            'tags' => 'nullable|array',
             'tags.*' => 'integer',
-            'json' => 'required',
-            'type' => 'required|numeric'
+            'json' => 'nullable',
+            'type' => 'nullable|numeric'
         ]);
         $document->cid = $request->cid;
         $document->title = $request->title;
@@ -131,7 +131,7 @@ class DocumentController extends Controller
         $document->added_by = auth()->id();
         try {
             if ($document->save()) {
-                $tags = json_decode($request->input('tags', []), true);
+                $tags = json_decode(json_encode($request->input('tags', [])), true);
                 $document->tags()->sync($tags);
                 return ApiResponse::response($document, [
                     'success' => [
