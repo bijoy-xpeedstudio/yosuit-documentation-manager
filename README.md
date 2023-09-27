@@ -1,13 +1,13 @@
 # Dev Docs
-The purpose to develop this tools for develop documentation and store it into database and make it centralize. 
+The purpose of developing these tools for develop documentation and store it in the database and make it centralized. 
 ### How to install it?
-Install composer package's first.
+Install composer packages first.
 
     composer install
 
-Clear cache and other stuffs.
+Clear cache and other stuff.    
 
-    php artisan optimze:clear
+    php artisan optimize:clear
 
 Make migration in your database
 
@@ -15,7 +15,7 @@ Make migration in your database
 
 Install passport
 
-	php artisan passpost:install
+	php artisan passport:install
 
 Make this project live
 
