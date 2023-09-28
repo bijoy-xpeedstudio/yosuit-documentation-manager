@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\FevouriteController;
@@ -54,7 +55,7 @@ Route::middleware(['auth:api'])->group(function () {
     /**
      * Fevourite
      */
-
-    Route::get('fevourite', [FevouriteController::class, 'index']);
-    Route::post('fevourite/store', [FevouriteController::class, 'store']);
+    Route::get('favourite', [FavouriteController::class, 'index']);
+    Route::post('favourite/store', [FavouriteController::class, 'store']);
+    Route::get('favourite/delete/{favourite}', [FavouriteController::class, 'destroy']);
 });

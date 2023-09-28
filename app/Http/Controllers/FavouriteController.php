@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Fevourite;
+use App\Models\Favourite;
 use Illuminate\Http\Request;
 use App\Http\Responses\ApiResponse;
 use App\Models\Document;
 use App\Models\Folder;
 
-class FevouriteController extends Controller
+class FavouriteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -63,11 +63,11 @@ class FevouriteController extends Controller
     {
         $request_time = date('Y-m-d H:i:s');
         $request->validate([
-            'type' => 'in:fevourite,location,document,folder',
-            'fevourite_id' => 'required|numeric'
+            'type' => 'in:favourite,location,document,folder',
+            'favourite_id' => 'required|numeric'
         ]);
 
-        $data = new Fevourite();
+        $data = new Favourite();
         $data->model = $request->type;
         $data->model_id = $request->fevourite_id;
         $data->user_id = auth()->id();
@@ -116,21 +116,22 @@ class FevouriteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($fevourite)
+    public function destroy($favourite)
     {
         $request_time = date('Y-m-d H:i:s');
 
-        $fevourite = Fevourite::find($fevourite);
-        if (is_null($fevourite)) {
-            return ApiResponse::response($fevourite, [
+        $favourite = Favourite::find($favourite);
+
+        if (is_null($favourite)) {
+            return ApiResponse::response($favourite, [
                 'error' => [
                     'Fevourite not found'
                 ]
             ], 444, $request_time);
         }
         try {
-            if ($fevourite->delete()) {
-                return ApiResponse::response($fevourite, [
+            if ($favourite->delete()) {
+                return ApiResponse::response($favourite, [
                     'message' => [
                         'success' => [
                             'Fevourite Removed'

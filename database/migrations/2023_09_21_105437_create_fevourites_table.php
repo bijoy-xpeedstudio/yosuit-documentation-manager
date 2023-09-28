@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fevourites', function (Blueprint $table) {
+        Schema::create('favourites', function (Blueprint $table) {
             $table->id();
-            $table->enum('model', ['fevourite', 'location', 'document', 'folder']);
+            $table->enum('model', ['favourite', 'location', 'document', 'folder']);
             $table->bigInteger('model_id');
 
             $table->unsignedBigInteger('user_id');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fevourites');
+        Schema::dropIfExists('favourites');
     }
 };
