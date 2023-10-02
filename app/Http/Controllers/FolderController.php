@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Folder;
 use App\Http\Responses\ApiResponse;
 use App\Http\Requests\FolderRequest;
-use App\Models\Fevourite;
+use App\Models\Favourite;
 use Illuminate\Support\Facades\DB;
 
 class FolderController extends Controller
@@ -56,7 +56,7 @@ class FolderController extends Controller
             $folder->added_by = auth()->id();
             $folder->save();
 
-            $fevourite = new Fevourite();
+            $fevourite = new Favourite();
             $fevourite->model = 'folder';
             $fevourite->model_id = $folder->id;
             $fevourite->user_id = auth()->id();
@@ -81,7 +81,7 @@ class FolderController extends Controller
         }
     }
 
-    
+
     /**
      * Display the specified resource.
      */
@@ -145,7 +145,7 @@ class FolderController extends Controller
             $folder->save();
             //$tags = json_decode($request->input('tags', []), true);
             $tags = $request->input('tags', []);
-            if($tags){
+            if ($tags) {
                 $folder->tags()->sync($tags);
             }
             DB::commit();
