@@ -14,6 +14,10 @@ class Document extends Model
         'cid', 'title', 'tags', 'json', 'type', 'added_by'
     ];
 
+
+    protected $casts = [
+        'tags' => 'array',
+    ];
     /**
      * return user
      */
