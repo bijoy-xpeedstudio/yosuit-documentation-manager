@@ -131,11 +131,11 @@ class DocumentController extends Controller
             'json' => 'nullable',
             'type' => 'nullable|numeric'
         ]);
-        $document->cid = $request->cid;
-        $document->title = $request->title;
-        $document->tags = $request->tags;
-        $document->json = $request->json;
-        $document->type = $request->type;
+        $document->cid = $request->cid ?? $document->cid;
+        $document->title = $request->title ?? $document->title;
+        $document->tags = $request->tags ?? $document->tags;
+        $document->json = $request->json ?? $document->json;
+        $document->type = $request->type ?? $document->type;
         $document->added_by = auth()->id();
         try {
             if ($document->save()) {
