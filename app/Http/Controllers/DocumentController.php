@@ -126,7 +126,7 @@ class DocumentController extends Controller
         $request->validate([
             'cid' => 'nullable|numeric',
             'title' => 'nullable|string|max:255',
-            'tags' => 'nullable|array',
+            'tags' => 'array',
             'tags.*' => 'integer',
             'json' => 'nullable',
             'type' => 'nullable|numeric'
