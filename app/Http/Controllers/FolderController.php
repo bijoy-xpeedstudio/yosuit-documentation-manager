@@ -62,7 +62,7 @@ class FolderController extends Controller
             $fevourite->user_id = auth()->id();
             $fevourite->save();
 
-            $folder->tags()->attach(json_decode($request->tags, true));
+            $folder->tags()->attach(json_decode(json_encode($request->tags, true)));
             $folder = Folder::with('subFolder', 'addedBy', 'tags')->where('is_active', true)
                 ->where('id', $folder->id)->get();
             return ApiResponse::response($folder, [
