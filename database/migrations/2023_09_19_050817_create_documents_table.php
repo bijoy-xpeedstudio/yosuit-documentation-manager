@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('cid');
+            $table->unsignedBigInteger('cid')->nullable();
             $table->string('title');
             $table->text('tags');
             $table->text('json');

@@ -50,7 +50,7 @@ class DocumentController extends Controller
     {
         $request_time = date('y-m-d h:i:s');
         $request->validate([
-            'cid' => 'required|numeric',
+            'cid' => 'nullable|numeric',
             'title' => 'required|string|max:255',
             'tags' => 'nullable|array',
             'tags.*' => 'integer',
