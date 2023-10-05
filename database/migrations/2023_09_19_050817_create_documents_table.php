@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cid')->nullable();
             $table->string('title');
             $table->text('tags');
-            $table->text('json');
+            $table->longText('json');
             $table->tinyInteger('type');
 
             $table->unsignedBigInteger('added_by');
