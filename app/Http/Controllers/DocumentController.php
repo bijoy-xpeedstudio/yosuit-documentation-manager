@@ -97,7 +97,7 @@ class DocumentController extends Controller
     public function show($id)
     {
         $request_time = date('y-m-d h:i:s');
-        $document = Document::with('cid.subFolder', 'addedBy', 'tags')->find($id);
+        $document = Document::with('addedBy', 'tags')->find($id);
         if (is_null($document)) {
             return ApiResponse::response($document, [
                 'error' => [
