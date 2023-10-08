@@ -31,6 +31,7 @@ Route::middleware(['auth:api'])->group(function () {
      */
     Route::get('document', [DocumentController::class, 'index']);
     Route::post('document/store', [DocumentController::class, 'store'])->middleware('isAdminOrEditor');
+    Route::get('document/show/{id}', [DocumentController::class, 'show']);
     Route::post('document/update/{document}', [DocumentController::class, 'update'])->middleware('isAdminOrEditor');
     Route::get('document/delete/{document}', [DocumentController::class, 'destroy'])->middleware('isAdminOrEditor');
 

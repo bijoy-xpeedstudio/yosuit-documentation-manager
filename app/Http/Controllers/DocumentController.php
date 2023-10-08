@@ -94,9 +94,23 @@ class DocumentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(document $document)
+    public function show($id)
     {
-        //
+        $request_time = date('y-m-d h:i:s');
+        $document = Document::with('cid.subFolder', 'addedBy', 'tags')->find($id);
+        if (is_null($document)) {
+            return ApiResponse::response($document, [
+                'error' => [
+                    'Document not found'
+                ]
+            ], 444, $request_time);
+        } else {
+            return ApiResponse::response($document, [
+                'success' => [
+                    'Document updated successfully'
+                ]
+            ], 200, $request_time);
+        }
     }
 
     /**
