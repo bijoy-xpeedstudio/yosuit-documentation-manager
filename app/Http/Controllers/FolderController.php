@@ -180,12 +180,14 @@ class FolderController extends Controller
             ], 444, $request_time);
         }
         try {
+            
+            $responseFolder = $folder;
             if ($folder->parent_id == null) {
                 Folder::where('parent_id', $folder->id)->delete();
             }
             $folder->delete();
-            $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
-            return ApiResponse::response($folder, [
+            // $folder = Folder::with('subFolder')->where(['parent_id' => null,])->where('is_active', true)->orderBy('id')->get();
+            return ApiResponse::response($responseFolder, [
                 'success' => [
                     'Folder removed successfully'
                 ]
