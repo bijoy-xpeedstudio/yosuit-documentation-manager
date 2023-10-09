@@ -17,7 +17,7 @@ class FavouriteController extends Controller
     {
         $request_time = date('Y-m-d H:i:s');
 
-        $data = Fevourite::with('userId')->where('user_id', auth()->id())->get();
+        $data = Favourite::with('userId')->where('user_id', auth()->id())->get();
 
         foreach ($data as $key => $value) {
             if ($value->model == 'document') {

@@ -7,7 +7,6 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\FevouriteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
