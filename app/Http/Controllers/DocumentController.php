@@ -68,12 +68,13 @@ class DocumentController extends Controller
 
         try {
             if ($data->save()) {
-
-                $favourite = new Favourite();
-                $favourite->model = 'document';
-                $favourite->model_id = $data->id;
-                $favourite->user_id = auth()->id();
-                $favourite->save();
+                if (is_null($data->cid)) {
+                    $favourite = new Favourite();
+                    $favourite->model = 'document';
+                    $favourite->model_id = $data->id;
+                    $favourite->user_id = auth()->id();
+                    $favourite->save();
+                }
 
                 $data->tags()->attach(json_decode(json_encode($request->tags), true));
                 return ApiResponse::response($data, [

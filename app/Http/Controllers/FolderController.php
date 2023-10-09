@@ -56,11 +56,13 @@ class FolderController extends Controller
             $folder->added_by = auth()->id();
             $folder->save();
 
-            $fevourite = new Favourite();
-            $fevourite->model = 'folder';
-            $fevourite->model_id = $folder->id;
-            $fevourite->user_id = auth()->id();
-            $fevourite->save();
+            if (is_null($folder->parent_id)) {
+                $fevourite = new Favourite();
+                $fevourite->model = 'folder';
+                $fevourite->model_id = $folder->id;
+                $fevourite->user_id = auth()->id();
+                $fevourite->save();
+            }
 
             $folder->tags()->attach(json_decode(json_encode($request->tags, true)));
             $folder = Folder::with('subFolder', 'addedBy', 'tags')->where('is_active', true)
@@ -180,7 +182,7 @@ class FolderController extends Controller
             ], 444, $request_time);
         }
         try {
-            
+
             $responseFolder = $folder;
             if ($folder->parent_id == null) {
                 Folder::where('parent_id', $folder->id)->delete();
